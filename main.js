@@ -1,275 +1,151 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Encontrar la ruta de la carpeta raíz basándonos en este script
-    const scriptTag = document.querySelector('script[src*="main.js"]');
-    const scriptPath = scriptTag.getAttribute('src');
-    const rootPath = scriptPath.replace('main.js', '');
+(function () {
+  const API_BASE = document.body?.dataset?.apiBase || "";
 
-    // 2. Función para limpiar y arreglar el HTML inyectado
-    const fixLinks = (html, base) => {
-        let div = document.createElement('div');
-        div.innerHTML = html;
-        
-        div.querySelectorAll('a[href^="/"]').forEach(link => {
-            const actualPage = link.getAttribute('href').substring(1);
-            link.setAttribute('href', base + actualPage);
-        });
+  function normalizeRootPath() {
+    const script = document.querySelector('script[src*="main.js"]');
+    if (!script) return "";
+    const src = script.getAttribute("src") || "";
+    return src.replace(/main\.js.*$/, "");
+  }
 
-        div.querySelectorAll('img[src^="/"]').forEach(img => {
-            const actualSrc = img.getAttribute('src').substring(1);
-            img.setAttribute('src', base + actualSrc);
-        });
+  function fixPartialLinks(html, base) {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = html;
 
-        return div.innerHTML;
-    };
+    wrap.querySelectorAll('a[href^="/"]').forEach((a) => {
+      a.href = `${base}${a.getAttribute("href").slice(1)}`;
+    });
+    wrap.querySelectorAll('img[src^="/"]').forEach((img) => {
+      img.src = `${base}${img.getAttribute("src").slice(1)}`;
+    });
+    return wrap.innerHTML;
+  }
 
-    // 3. Cargar Navbar
-    fetch(rootPath + 'navbar.html')
-    .then(response => response.text())
-    .then(data => {
-        const headerEl = document.querySelector('header');
-        headerEl.innerHTML = fixLinks(data, rootPath);
-        
-        // Agregamos clase para que CSS se aplique con fuerza
-        headerEl.classList.add('loaded');
-    })
-    .catch(err => console.error("Error en Navbar:", err));
+  async function loadLayoutPartials() {
+    const base = normalizeRootPath();
+    const header = document.querySelector("header");
+    const footer = document.querySelector("footer");
 
-    // 4. Cargar Footer
-    fetch(rootPath + 'footer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.querySelector('footer').innerHTML = fixLinks(data, rootPath);
-        })
-        .catch(err => console.error("Error en Footer:", err));
-
-    // 5. Iconos Bootstrap
-    if (!document.getElementById('bootstrap-icons')) {
-        const link = document.createElement('link');
-        link.id = 'bootstrap-icons';
-        link.rel = 'stylesheet';
-        link.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css';
-        document.head.appendChild(link);
+    if (header) {
+      const html = await fetch(`${base}navbar.html`).then((r) => r.text());
+      header.innerHTML = fixPartialLinks(html, base);
     }
-
-    // ========== SCROLL ANIMATIONS ==========
-    
-    // Intersection Observer para animaciones en scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animation = `fadeInUp 0.8s ease-out forwards`;
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    // Observar elementos con clase "scroll-reveal"
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-        el.style.opacity = '0';
-        observer.observe(el);
-    });
-
-    // ========== HEADER SCROLL EFFECT ==========
-    
-    let lastScrollTop = 0;
-    const header = document.querySelector('header');
-
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Agregar sombra al scroll
-        if (scrollTop > 10) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, false);
-
-    // ========== PARALLAX EFFECT ==========
-    
-    const parallaxElements = document.querySelectorAll('.featured-image img, .featured-image video');
-    
-    window.addEventListener('scroll', () => {
-        parallaxElements.forEach(element => {
-            const rect = element.getBoundingClientRect();
-            const scrollPos = window.pageYOffset;
-            const elementOffset = element.offsetTop;
-            
-            // Parallax leve (3%)
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                const yPos = (scrollPos - elementOffset) * 0.03;
-                element.style.transform = `translateY(${yPos}px)`;
-            }
-        });
-    });
-
-    // ========== STAGGER ANIMATIONS ==========
-    
-    // Para cards en grids
-    const cards = document.querySelectorAll('.news-card, .article-card, .contact-card');
-    cards.forEach((card, index) => {
-        card.style.setProperty('--delay', `${0.1 * index}s`);
-    });
-
-    // ========== BUTTON RIPPLE EFFECT ==========
-    
-    const buttons = document.querySelectorAll('.read-more, .contact-card a');
-    buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            const rect = this.getBoundingClientRect();
-            const ripple = document.createElement('span');
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-
-            this.appendChild(ripple);
-
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
-
-    // ========== SMOOTH SCROLL FOR NAVIGATION ==========
-    
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // ========== PAGE LOAD COMPLETE ANIMATION ==========
-    
-    window.addEventListener('load', () => {
-        document.body.style.opacity = '1';
-    });
-
-});
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js")
-      .then(reg => console.log("Service Worker registrado", reg))
-      .catch(err => console.error("Error registrando Service Worker:", err));
-  });
-}
-async function subscribeToPush() {
-  try {
-    if (!("serviceWorker" in navigator)) {
-      alert("Este navegador no soporta service workers");
-      return;
+    if (footer) {
+      const html = await fetch(`${base}footer.html`).then((r) => r.text());
+      footer.innerHTML = fixPartialLinks(html, base);
     }
+  }
 
-    if (!("PushManager" in window)) {
-      alert("Este navegador no soporta push notifications");
-      return;
-    }
-
-    const permission = await Notification.requestPermission();
-
-    if (permission !== "granted") {
-      alert("No diste permiso para notificaciones");
-      return;
-    }
-
-    const registration = await navigator.serviceWorker.ready;
-
-    const existingSub = await registration.pushManager.getSubscription();
-    if (existingSub) {
-      console.log("Ya existe suscripción:", existingSub);
-      alert("Ya tienes alertas activadas");
-      return;
-    }
-
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array("BL8V4LbPBOc8Wn4BNnu9Kj0eOOqsDYxlektrceADGZH-32HtrSN1uap-aVr-GH5IjwvvQBZ3RHTUZSw3GpgjcGE")
-    });
-
-    console.log("Suscripción creada:", subscription);
-
-    const res = await fetch("/api/push/subscribe", {
+  async function postJson(path, payload) {
+    const url = API_BASE ? `${API_BASE}${path}` : path;
+    const res = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(subscription)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Error en servidor");
+    return data;
+  }
 
-    const text = await res.text();
-    console.log("Respuesta backend:", text);
+  function bindNewsletterForm() {
+    const form = document.getElementById("newsletter-form");
+    const status = document.getElementById("newsletter-status");
+    if (!form || !status) return;
 
-    if (!res.ok) {
-      throw new Error("El backend no guardó la suscripción");
-    }
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("newsletter-email")?.value?.trim();
+      status.textContent = "Enviando...";
+      try {
+        await postJson("/api/subscribe", { email, source: location.pathname });
+        form.reset();
+        status.textContent = "¡Listo! Te suscribimos correctamente.";
+      } catch (err) {
+        status.textContent = err.message;
+      }
+    });
+  }
 
+  function bindContactForm() {
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("contact-status");
+    if (!form || !status) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById("contact-name")?.value?.trim(),
+        email: document.getElementById("contact-email")?.value?.trim(),
+        subject: document.getElementById("contact-subject")?.value?.trim(),
+        message: document.getElementById("contact-message")?.value?.trim(),
+      };
+
+      status.textContent = "Enviando mensaje...";
+      try {
+        await postJson("/api/contact", payload);
+        form.reset();
+        status.textContent = "Mensaje enviado. Gracias por contactarnos.";
+      } catch (err) {
+        status.textContent = err.message;
+      }
+    });
+  }
+
+  function registerServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/service-worker.js").catch(console.error);
+  }
+
+  async function subscribeToPush() {
     const btn = document.getElementById("push-btn");
-    if (btn) {
-      btn.textContent = "✅ Alertas activadas";
-      btn.disabled = true;
+    try {
+      if (!("PushManager" in window)) throw new Error("Push no soportado en este navegador.");
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") throw new Error("Debes permitir las notificaciones.");
+
+      const registration = await navigator.serviceWorker.ready;
+      const existingSub = await registration.pushManager.getSubscription();
+      if (existingSub) {
+        btn && (btn.textContent = "✅ Alertas activadas");
+        return;
+      }
+
+      // Llave pública opcional. Si no existe, dejamos el flujo sin backend de push.
+      if (!window.__VAPID_PUBLIC_KEY__) throw new Error("Push aún no configurado.");
+
+      const sub = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(window.__VAPID_PUBLIC_KEY__),
+      });
+      await postJson("/api/push/subscribe", sub);
+      btn && (btn.textContent = "✅ Alertas activadas");
+      btn && (btn.disabled = true);
+    } catch (err) {
+      alert(err.message || "No se pudo activar push");
+    }
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map((ch) => ch.charCodeAt(0)));
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      await loadLayoutPartials();
+    } catch (e) {
+      console.error("Error cargando header/footer", e);
     }
 
-    alert("Notificaciones activadas");
-  } catch (err) {
-    console.error("Error en push:", err);
-    alert("Falló push: " + err.message);
-  }
-}
+    bindNewsletterForm();
+    bindContactForm();
+    registerServiceWorker();
 
-function urlBase64ToUint8Array(base64String) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
-
-  const rawData = atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-
-  return outputArray;
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("push-btn");
-  if (!btn) {
-    console.error("No existe #push-btn");
-    return;
-  }
-
-  btn.addEventListener("click", subscribeToPush);
-  console.log("Botón push conectado");
-});
-window.addEventListener('DOMContentLoaded', () => {
-  const pushBtn = document.getElementById('push-btn');
-  if (pushBtn) {
-    pushBtn.addEventListener('click', subscribeToPush);
-  }
-});
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = atob(base64);
-  return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
-}
+    document.addEventListener("click", (e) => {
+      if (e.target && e.target.id === "push-btn") subscribeToPush();
+    });
+  });
+})();
