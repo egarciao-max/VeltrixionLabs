@@ -1,0 +1,11 @@
+name = "oropezas-api"
+main = "worker/index.js"
+compatibility_date = "2026-04-20"
+
+[[kv_namespaces]]
+binding = "OROPEZAS_KV"
+id = "REEMPLAZAR_CON_KV_NAMESPACE_ID"
+
+[vars]
+CONTACT_TO_EMAIL = "contacto@oropezas.com"
+CONTACT_FROM_EMAIL = "Oropezas <no-reply@oropezas.com>"

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto - OROPEZAS.COM</title>
     <link rel="stylesheet" href="styles.css">
- <link rel="stylesheet" href="noticias.html">
+ 
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Oropezas">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
     <header>
@@ -46,6 +46,17 @@
                 <p>Advertising / Ads</p>
                 <a href="mailto:ad@oropezas.com">ad@oropezas.com</a>
             </div>
+        </section>
+        <section style="margin-top:2rem;max-width:760px;">
+            <h2 style="font-size:1.2rem;margin-bottom:.75rem;">Enviar mensaje</h2>
+            <form id="contact-form" class="newsletter-form">
+                <input id="contact-name" type="text" placeholder="Nombre" required>
+                <input id="contact-email" type="email" placeholder="Correo" required>
+                <input id="contact-subject" type="text" placeholder="Asunto" required>
+                <textarea id="contact-message" rows="5" placeholder="Escribe tu mensaje" required></textarea>
+                <button class="btn" type="submit">Enviar</button>
+                <p class="form-status" id="contact-status" aria-live="polite"></p>
+            </form>
         </section>
     </main>
 <script src="main.js"></script>
