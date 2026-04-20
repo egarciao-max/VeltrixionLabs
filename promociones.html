@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Oropezas">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <title>Promociones pagadas - Oropezas.com</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .promo-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0 4rem;
+        }
+
+        .promo-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .promo-kicker {
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gray-text);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .promo-title {
+            font-size: 2.3rem;
+            line-height: 1.15;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+
+        .promo-subtitle {
+            font-size: 1.05rem;
+            color: var(--gray-text);
+            line-height: 1.7;
+            max-width: 760px;
+        }
+
+        .promo-section {
+            margin-bottom: 3rem;
+        }
+
+        .promo-section h2 {
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gray-text);
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .promo-section p {
+            font-size: 1rem;
+            line-height: 1.9;
+            margin-bottom: 1.2rem;
+            color: var(--black);
+        }
+
+        .promo-highlight {
+            background: var(--gray-light);
+            border-left: 3px solid var(--black);
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .promo-highlight strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .embed-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .embed-card {
+            border: 1px solid var(--gray-border);
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .embed-frame {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: 0;
+            display: block;
+            background: var(--gray-light);
+        }
+
+        .embed-content {
+            padding: 1.25rem;
+        }
+
+        .embed-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+            font-weight: 800;
+        }
+
+        .embed-content p {
+            font-size: 0.95rem;
+            color: var(--gray-text);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .embed-link {
+            display: inline-block;
+            padding: 0.75rem 1.2rem;
+            background: var(--black);
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            border-radius: 4px;
+            transition: opacity 0.2s ease;
+        }
+
+        .embed-link:hover {
+            opacity: 0.85;
+        }
+
+        .platform-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .platform-card {
+            border: 1px solid var(--gray-border);
+            padding: 1.2rem;
+            border-radius: 6px;
+            background: var(--gray-light);
+        }
+
+        .platform-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .platform-card p {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 0.9rem;
+        }
+
+        .note-box {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            border: 1px dashed var(--gray-border);
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            background: #fafafa;
+        }
+
+        @media (max-width: 768px) {
+            .promo-title {
+                font-size: 1.7rem;
+            }
+
+            .platform-list {
+                grid-template-columns: 1fr;
+            }
+
+            .promo-page {
+                padding-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+
+    <main>
+        <article class="promo-page">
+            <div class="promo-header">
+                <p class="promo-kicker">Publicidad</p>
+                <h1 class="promo-title">Promociones pagadas en Oropezas.com</h1>
+                <p class="promo-subtitle">
+                    En Oropezas.com también abrimos espacio para promociones pagadas, colaboraciones comerciales
+                    y contenido patrocinado, siempre manteniendo una presentación clara para la audiencia.
+                    Esta sección está pensada para mostrar campañas, marcas, negocios locales y proyectos que
+                    quieran aparecer dentro del sitio con visibilidad directa.
+                </p>
+            </div>
+
+            <section class="promo-section">
+                <h2>¿Qué son las promociones pagadas?</h2>
+                <p>
+                    Las promociones pagadas son espacios publicitarios o publicaciones comerciales dentro de
+                    Oropezas.com. Pueden incluir menciones destacadas, artículos patrocinados, difusión de
+                    eventos, campañas especiales o presencia de marca en secciones estratégicas del sitio.
+                </p>
+                <p>
+                    El objetivo es que negocios, emprendimientos, artistas, eventos y marcas puedan llegar a
+                    una audiencia local de forma más visible, con un formato limpio, directo y adaptado al estilo
+                    editorial del portal.
+                </p>
+
+                <div class="promo-highlight">
+                    <strong>Importante</strong>
+                    Todo contenido patrocinado o promocional debe estar claramente identificado como promoción pagada
+                    para mantener transparencia con la audiencia. Sí, la ética existe, aunque internet a veces actúe como si no.
+                </div>
+            </section>
+
+            <section class="promo-section">
+                <h2>Canales embebidos</h2>
+                <p>
+                    Por ahora esta sección puede usarse para mostrar canales oficiales, perfiles o espacios de difusión
+                    de marcas y proyectos. Algunos servicios permiten embed real con iframe y otros solo dejan enlazar
+                    o mostrar vistas previas, porque la web moderna ama poner trabas innecesarias.
+                </p>
+
+                <div class="embed-grid">
+                  <div class="embed-card">
+    <iframe
+        class="embed-frame"
+        src="https://www.youtube.com/embed/XbBPGD-2FGQ"
+        title="Video promocional"
+        allowfullscreen>
+    </iframe>
+
+    <div class="embed-content">
+        <h3>@acidhorz</h3>
+        <p>
+            @acidhorz es un Youtuber Canadiense.
+        </p>
+        <a href="https://youtu.be/XbBPGD-2FGQ" class="embed-link" target="_blank">
+            Ver en YouTube
+        </a>
+    </div>
+</div>
+           </div>
+<!--
+                <div class="platform-list">
+                    <div class="platform-card">
+                        <h4>WhatsApp</h4>
+                        <p>
+                            Los canales de WhatsApp normalmente no tienen un embed limpio universal.
+                            Aquí conviene poner botón directo al canal o comunidad.
+                        </p>
+                        <a href="#" class="embed-link">Abrir canal</a>
+                    </div>
+
+                    <div class="platform-card">
+                        <h4>Instagram</h4>
+                        <p>
+                            Se puede enlazar el perfil o insertar publicaciones específicas, pero no siempre
+                            el perfil completo se deja mostrar bonito dentro del sitio.
+                        </p>
+                        <a href="#" class="embed-link">Ver perfil</a>
+                    </div>
+
+                    <div class="platform-card">
+                        <h4>TikTok</h4>
+                        <p>
+                            TikTok permite algunas inserciones de publicaciones, aunque depende del formato y del
+                            código embebido que te dé la plataforma.
+                        </p>
+                        <a href="#" class="embed-link">Ver canal</a>
+                    </div>
+                </div>
+ <-->
+                <div class="note-box">
+                    Puedes dejar esta página como base y luego cambiar cada bloque por los canales reales de clientes,
+                    marcas o campañas. Si más adelante quieres, se puede convertir en una página más pro con paquetes,
+                    precios, banners, métricas y formulario de contacto comercial. Porque claro, eventualmente toca monetizar el invento.
+                </div>
+            </section>
+
+            <section class="promo-section">
+                <h2>Contacto comercial</h2>
+                <p>
+                    Para promociones pagadas, colaboraciones o difusión comercial dentro de Oropezas.com,
+                    se puede dirigir la solicitud al correo correspondiente del sitio para revisar disponibilidad,
+                    formatos y alcance de publicación.
+                </p>
+                <p>
+                    Cada propuesta puede adaptarse según el tipo de campaña, duración, ubicación dentro del sitio
+                    y tipo de contenido a promocionar.
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <script src="main.js"></script>
+    <footer></footer>
+</body>
+</html>
