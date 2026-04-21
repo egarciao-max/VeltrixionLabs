@@ -107,7 +107,33 @@ export default {
         const answer = await askGemini(env.GEMINI_API_KEY, prompt);
         return json({ ok: true, answer });
       }
+if (url.pathname === "/api/push/subscribe" && request.method === "POST") {
+  const body = await parseJson(request);
 
+  if (!body?.endpoint || !body?.keys?.p256dh || !body?.keys?.auth) {
+    throw httpError(400, "Suscripción push inválida");
+  }
+
+  const subscription = {
+    id: crypto.randomUUID(),
+    endpoint: String(body.endpoint),
+    keys: {
+      p256dh: String(body.keys.p256dh),
+      auth: String(body.keys.auth),
+    },
+    createdAt: new Date().toISOString(),
+    userAgent: request.headers.get("User-Agent") || "unknown",
+  };
+
+  if (!env.OROPEZAS_KV) throw httpError(500, "KV no está configurado");
+
+  await env.OROPEZAS_KV.put(
+    `push:${subscription.id}`,
+    JSON.stringify(subscription)
+  );
+
+  return json({ ok: true, id: subscription.id, message: "Push suscrito" }, 201);
+}
       return json({ ok: false, error: "Not found" }, 404);
     } catch (err) {
       const status = err.status || 500;
